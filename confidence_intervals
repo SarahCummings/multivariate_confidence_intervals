@@ -1,0 +1,33 @@
+#   Constructing 95% Bonferroni intervals for individual covariates
+#   with Bonferroni pairwise corrections
+
+allmeans<-apply(milk_transportation_data,2,mean)
+allvars<-apply(milk_transportation_data,2,var)
+
+#   Setting dataset-specific parameter values
+alpha<-0.05
+n=nrows(milk_transportation_data)
+p=ncols(milk_transportation_data)
+
+#   Retrieving quantile function for F-distribution
+q<-qf(alpha,df1=p,df2=n-p,lower.tail=F)
+cc<-q*(n-1)*p/(n*(n-p))
+
+#   Looping through each covariate
+for ( i in 1:3){
+	i = c(allmeans[i] - sqrt(cc*allvars[i]), allmeans[i] + sqrt(cc*allvars[i]))
+	print (i)
+}
+
+#   Constructing 95% T-squared intervals for individual covariates
+#   Retrieving quantile function for F-distribution
+q2<-qf(alpha,df1=1,df2=n-1,lower.tail=F)
+
+#   Setting up univariate intervals
+#   Stacking up all intervals 
+univariate.intervals <- cbind(allmeans-sqrt(q2*allvars/n),allmeans+sqrt(q2*allvars/n))
+colnames(univariate.intervals)<-c("Lower","Upper")
+
+#   Representing result
+print(cbind(allmeans,univariate.intervals))
+
