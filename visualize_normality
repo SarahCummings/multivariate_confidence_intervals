@@ -1,0 +1,35 @@
+#   Preparing data
+
+head(milk_transportation_data)
+is.data.frame(milk_transportation_data)
+names(milk_transportation_data)[names(milk_transportation_data)=="V1"]<-"Fuel"
+names(milk_transportation_data)[names(milk_transportation_data)=="V2"]<-"Repair"
+names(milk_transportation_data)[names(milk_transportation_data)=="V3"]<-"Capital"
+head(milk_transportation_data)
+
+#   Examining covariates pairwise marginal distribution
+par(mfrow=c(1,3))
+qqplot(milk_transportation_data$Fuel,milk_transportation_data$Repair,xlab='Fuel (x1)',ylab='Repair (x2)')
+abline(a=0,b=1)
+qqplot(milk_transportation_data$Fuel,milk_transportation_data$Capital,xlab='Fuel (x1)',ylab='Capital (x3)')
+abline(a=0,b=1)
+qqplot(milk_transportation_data$Repair,milk_transportation_data$Capital,xlab='Repair (x2)',ylab='Capital (x3)')
+abline(a=0,b=1)
+
+#   Examining covariates pairwise scatter diagrams 
+p4<-ggplot(milk_transportation_data,aes(milk_transportation_data$Fuel,milk_transportation_data$Repair,label=row.names(milk_transportation_data)))+geom_text()
+p5<-ggplot(milk_transportation_data,aes(milk_transportation_data$Fuel,milk_transportation_data$Capital,label=row.names(milk_transportation_data)))+geom_text()
+p6<-ggplot(milk_transportation_data,aes(milk_transportation_data$Repair,milk_transportation_data$Capital,label=row.names(milk_transportation_data)))+geom_text()
+
+#   Excluding apparent outliers
+new_milk<-subset(milk_transportation_data,milk_transportation_data$Fuel<20)
+
+#   Re-examining data normality
+par(mfrow=c(1,3))
+qqplot(new_milk$Fuel,new_milk$Repair,xlab='Fuel (x1)',ylab='Repair (x2)')
+abline(a=0,b=1)
+qqplot(new_milk$Fuel,new_milk$Capital,xlab='Fuel (x1)',ylab='Capital (x3)')
+abline(a=0,b=1)
+qqplot(new_milk$Repair,new_milk$Capital,xlab='Repair (x2)',ylab='Capital (x3)')
+abline(a=0,b=1)
+
